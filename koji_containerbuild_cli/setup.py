@@ -18,7 +18,7 @@ def get_requirements(requirements_file='requirements.txt'):
 
 
 setup(
-    name="koji-containerbuild",
+    name="koji_containerbuild_cli",
     version="0.8.0",
     author="Pavol Babincak",
     author_email="pbabinca@redhat.com",
@@ -26,8 +26,7 @@ setup(
     license="LGPLv2+",
     url="https://github.com/containerbuildsystem/koji-containerbuild",
     packages=[
-        'koji_containerbuild',
-        'koji_containerbuild.plugins',
+        'koji_containerbuild.cli',
     ],
     install_requires=get_requirements(),
     classifiers=[

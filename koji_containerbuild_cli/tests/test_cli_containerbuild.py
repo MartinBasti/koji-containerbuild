@@ -22,8 +22,8 @@ import pytest
 from flexmock import flexmock
 from collections import OrderedDict
 
-from koji_containerbuild.plugins import cli_containerbuild
-from koji_containerbuild.plugins.cli_containerbuild import parse_arguments, parse_source_arguments
+from koji_containerbuild import cli
+from koji_containerbuild.cli import parse_arguments, parse_source_arguments
 
 
 def mock_session(target,
@@ -36,7 +36,7 @@ def mock_session(target,
                  task_success=True,
                  task_result=None,
                  priority=None,
-                 channel=cli_containerbuild.DEFAULT_CHANNEL,
+                 channel=cli.DEFAULT_CHANNEL,
                  running_in_background=False):
     """
     Mock a session for the purposes of cli_containerbuild.handle_build()
@@ -47,12 +47,12 @@ def mock_session(target,
     if not task_result:
         task_result = {}
 
-    (flexmock(cli_containerbuild)
+    (flexmock(cli)
         .should_receive('activate_session'))  # and do nothing
-    (flexmock(cli_containerbuild)
+    (flexmock(cli)
         .should_receive('_running_in_bg')
         .and_return(running_in_background))
-    (flexmock(cli_containerbuild)
+    (flexmock(cli)
         .should_receive('watch_tasks')
         .and_return(0 if task_success else 1))
 
