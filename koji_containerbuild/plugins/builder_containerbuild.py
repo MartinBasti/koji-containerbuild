@@ -1017,6 +1017,8 @@ class BuildContainerTask(BaseContainerTask):
         return {
             'repositories': all_repositories,
             'koji_builds': all_koji_builds,
+            'user_warnings': ['test', 'tests1'],
+            'yolo': 'test',
         }
 
 
