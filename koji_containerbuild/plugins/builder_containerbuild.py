@@ -283,6 +283,22 @@ class LabelsWrapper(object):
             return "%s (or %s)" % (label_map[0], " or ".join(label_map[1:]))
 
 
+class OSBSClientHandler(logging.Handler):
+
+    def __init__(self, session, upload_path):
+        super(OSBSClientHandler, self).__init__()
+        self.f = StringIO()
+        self.session = session
+        self.upload_path = upload_path
+
+    def emit(self, record):
+        msg = self.format(record)
+        self.f.write(msg)
+        incremental_upload(
+            self.session, 'osbs-client.log',
+            self.f, self.upload_path, retries=0, logger=None)
+
+
 class BaseContainerTask(BaseTaskHandler):
     """Common class for BuildContainerTask and BuildSourceContainerTask"""
     def __init__(self, id, method, params, session, options, workdir=None):
@@ -313,11 +329,11 @@ class BaseContainerTask(BaseTaskHandler):
     def setup_osbs_logging(self):
         # Setting handler more than once will cause duplicated log lines.
         # Log handler will persist in child process.
+
         if not self._log_handler_added:
             osbs_logger = logging.getLogger(osbs.__name__)
             osbs_logger.setLevel(logging.INFO)
-            log_file = os.path.join(self.resultdir(), 'osbs-client.log')
-            handler = logging.FileHandler(filename=log_file)
+            handler = OSBSClientHandler(self.session, self.getUploadPath())
             # process (PID) is useful because a buildContainer task forks main process
             formatter = logging.Formatter(
                 '%(asctime)s - %(process)d - %(name)s - %(levelname)s - %(message)s')
